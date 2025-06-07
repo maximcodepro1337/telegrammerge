@@ -81,25 +81,17 @@ window.addEventListener('keydown', (e) => {
     }
   });
   
-function handleInput(xPosition) {
-  const margin = 30;
-  const x = Math.max(margin, Math.min(width - margin, xPosition));
-  const ball = createBall(x, Math.floor(Math.random() * 4) + 1);
-  World.add(world, ball);
-}
-
-render.canvas.addEventListener('click', (event) => {
-  const rect = render.canvas.getBoundingClientRect();
-  const x = event.clientX - rect.left;
-  handleInput(x);
-});
-
-render.canvas.addEventListener('touchstart', (event) => {
-  const rect = render.canvas.getBoundingClientRect();
-  const touch = event.touches[0];
-  const x = touch.clientX - rect.left;
-  handleInput(x);
-});
+window.addEventListener('click', (event) => {
+    const rect = render.canvas.getBoundingClientRect();
+    let x = event.clientX - rect.left;
+  
+    // Ограничим координату по ширине канваса
+    const margin = 30; // Чтобы шар не выходил за границу
+    x = Math.max(margin, Math.min(width - margin, x));
+  
+    const ball = createBall(x, Math.floor(Math.random() * 4) + 1);
+    World.add(world, ball);
+  });
 
   
   let autoPlay = false;
