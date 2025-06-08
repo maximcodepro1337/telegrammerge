@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Игра с Физикой — Встряхивание</title>
+  <title>telegram merge</title>
   <style>
     body {
       margin: 0;
@@ -15,8 +15,9 @@
       gap: 10px;
     }
     canvas {
-      border: 4px solid rgb(63, 63, 63);
+        border: 4px solid rgb(63, 63, 63);
     }
+
     button {
       padding: 10px 20px;
       font-size: 18px;
@@ -29,14 +30,28 @@
     button:hover {
       background: #666;
     }
+    #priceCounter {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    font-family: sans-serif;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 10px;
+    z-index: 1000;
+    }
+
   </style>
 </head>
 <body>
-  <button id="shakeButton">Встряхнуть коробку</button>
+  <div id="priceCounter">0 TON</div>
+  <button id="shakeButton">Shake</button>
   <script src="https://cdn.jsdelivr.net/npm/matter-js"></script>
   <script type="module" src="textures.js"></script>
   <script type="module" src="game.js"></script>
-  <script type="module" src="Modelpicker.js"></script>
 
   
 </body>
