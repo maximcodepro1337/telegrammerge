@@ -1,12 +1,24 @@
-import { getRandomModelForLevel } from './Modelpicker.js';
+import { getRandomModelForLevel, getRandomModelForLevel1 } from './modelPicker.js';
 import { ballTextures } from './textures.js';
 const { Engine, Render, Runner, World, Bodies, Events, Body } = Matter;
 const width = 400;
 const height = 600;
-
+let totalPrice = 0;
 const engine = Engine.create();
 const world = engine.world;
-
+function getGameDimensions() {
+    const margin = 20; // отступы от краёв экрана
+    const maxWidth = window.innerWidth - margin * 2;
+    const maxHeight = window.innerHeight - margin * 2 - 100; // оставим место под кнопки/счётчики
+  
+    // Можно ограничить максимальные размеры, чтобы на десктопе не было слишком большого поля
+    // const width = Math.min(400, maxWidth);
+    // const height = Math.min(600, maxHeight);
+    const width = maxWidth;
+    const height = maxHeight;
+  
+    return { width, height };
+  }
 const render = Render.create({
   element: document.body,
   engine: engine,
@@ -14,7 +26,7 @@ const render = Render.create({
     width,
     height,
     wireframes: false,
-    background: '#222'
+    background: '#333'
   }
 });
 
@@ -50,10 +62,27 @@ const colors = ['#00f', '#0f0', '#f00', '#ff0', '#f0f', '#0ff', '#fff'];
 //     ball.level = level;
 //     return ball;
 //   }
-function createBall(x = width / 2, level = 1) {
+function createBall(x = width / 2, level = 1, usage = 'new') {
     const size = 15 + level * 5;
-    const { image, name } = getRandomModelForLevel(level);
-  
+    let model;
+    if (usage === 'pairs') {
+        model = getRandomModelForLevel(level);
+      } else if (usage === 'new') {
+        model = getRandomModelForLevel1(level);
+      }
+    console.log(usage);
+    const { image, name, price } = model;
+    if (image) {
+        const img = new Image();
+        img.onerror = function() {
+            console.error('Не удалось загрузить изображение для уровня', level, 'URL:', image);
+        };
+        img.src = image;
+    }
+    if (price) {
+        totalPrice += price;
+        updatePriceCounter();
+      }
     const ball = Bodies.circle(x, 0, size, {
       restitution: 0.2,
       render: {
@@ -72,24 +101,28 @@ window.addEventListener('keydown', (e) => {
       autoPlay = !autoPlay;
   
       if (autoPlay) {
-        console.log('Автоигра включена');
+        console.log('🎮 Автоигра включена');
         startAutoPlay();
       } else {
-        console.log('Автоигра остановлена');
+        console.log('⏹ Автоигра остановлена');
         stopAutoPlay();
       }
     }
   });
   
+// Добавление шарика при клике
 let lastTouchTime = 0;
 
 function handleInput(xPosition) {
   const margin = 30;
   const x = Math.max(margin, Math.min(width - margin, xPosition));
-  const ball = createBall(x, Math.floor(Math.random() * 4) + 1);
+  const ball = createBall(x, Math.floor(Math.random() * 4) + 1, 'new');
   World.add(world, ball);
 }
-
+function updatePriceCounter() {
+    const el = document.getElementById("priceCounter");
+    el.textContent = `${totalPrice.toFixed(2)} TON`;
+  }
 render.canvas.addEventListener('touchstart', (event) => {
   event.preventDefault(); // предотвращает click после touch
   const now = Date.now();
@@ -113,7 +146,6 @@ render.canvas.addEventListener('click', (event) => {
   handleInput(x);
 });
 
-
   
   let autoPlay = false;
   let autoPlayId = null;
@@ -122,11 +154,11 @@ render.canvas.addEventListener('click', (event) => {
     if (!autoPlay) return;
   
     const x = Math.random() * (width - 60) + 30;
-    const ball = createBall(x, Math.floor(Math.random() * 4) + 1);
+    const ball = createBall(x, Math.floor(Math.random() * 4) + 1, 'new');
     World.add(world, ball);
   
     // const delay = Math.random() * 600 + 300; // 300–900 мс
-    const delay = 300; // 300–900 мс
+    const delay = 25; // 300–900 мс
     autoPlayId = setTimeout(startAutoPlay, delay);
   }
   
@@ -147,7 +179,7 @@ Events.on(engine, 'collisionStart', function(event) {
       World.remove(world, bodyA);
       World.remove(world, bodyB);
 
-      const newBall = createBall(x, newLevel);
+      const newBall = createBall(x, newLevel, 'pairs');
       Body.setPosition(newBall, { x, y });
       World.add(world, newBall);
     }
