@@ -9,7 +9,7 @@ const world = engine.world;
 function getGameDimensions() {
     const margin = 20; // отступы от краёв экрана
     const maxWidth = window.innerWidth - margin * 2;
-    const maxHeight = window.innerHeight - margin * 2 - 100; // оставим место под кнопки/счётчики
+    const maxHeight = window.innerHeight - margin * 2 - 100; // оставим место под кнопки счётчики
   
     // Можно ограничить максимальные размеры, чтобы на десктопе не было слишком большого поля
     // const width = Math.min(400, maxWidth);
