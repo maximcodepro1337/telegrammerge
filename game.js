@@ -1,4 +1,4 @@
-import { getRandomModelForLevel, getRandomModelForLevel1 } from './Modelpicker.js';
+import { getRandomModelForLevel, getRandomModelForLevel1 } from './ModelPicker.js';
 import { ballTextures } from './textures.js';
 const { Engine, Render, Runner, World, Bodies, Events, Body } = Matter;
 const width = 400;
